@@ -1,2 +1,2 @@
 # RAM_VIP
-VIP for Single Port RAM Synchronous Read/Write
+UVM VIP for Single Port RAM Synchronous Read/Write
