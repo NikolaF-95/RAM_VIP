@@ -13,7 +13,6 @@ class ram_monitor#(parameter DATA_WIDTH=`DATA_WIDTH, parameter ADDR_WIDTH=`ADDR_
         `uvm_component_utils_end
 
         // //Variable: ram_if
-        // //SI Interface
         virtual ram_if#(DATA_WIDTH, ADDR_WIDTH) ram_if_obj;
 
         bit[DATA_WIDTH-1:0] memory_model[int];
@@ -22,8 +21,7 @@ class ram_monitor#(parameter DATA_WIDTH=`DATA_WIDTH, parameter ADDR_WIDTH=`ADDR_
         int num_of_read_data=0;
         int num_of_checked_read_data=0;
 
-        // //Variable: trans
-        // //SI transaction
+        // //Variable: tr
         ram_item#(DATA_WIDTH, ADDR_WIDTH) tr;
 
         //Variable: analysis_port
