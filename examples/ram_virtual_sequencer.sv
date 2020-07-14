@@ -43,7 +43,7 @@ function void ram_virtual_sequencer::build_phase(uvm_phase phase);
    `uvm_fatal(get_name(), "cfg is not set")
 
     if(!uvm_config_db#(virtual ram_if#(DATA_WIDTH, ADDR_WIDTH))::get(this, "", "ram_if", ram_if_obj))
-     `uvm_fatal(get_name(), "si interface is not set")
+        `uvm_fatal(get_name(), "Interface is not set")
 
 endfunction
 //-----------------------------------------------------
