@@ -242,7 +242,7 @@ task ram_monitor::cs_inactive_checker();
                 //@ (negedge ram_if_obj.monitor_cb.cs)
                 @ ram_if_obj.monitor_cb;
                 while(ram_if_obj.monitor_cb.cs === 0) begin
-                        if((ram_if_obj.monitor_cb.data_in !== {DATA_WIDTH{1'bz}})&&(ram_if_obj.monitor_cb.oe && !ram_if_obj.monitor_cb.we)) 
+                        if((ram_if_obj.monitor_cb.data_in !== {DATA_WIDTH{1'bz}})&&(/*ram_if_obj.monitor_cb.oe &&*/ !ram_if_obj.monitor_cb.we)) 
                         `uvm_error(get_name(), "data signal must be z while cs is inactive!")
                         @ ram_if_obj.monitor_cb;
                 end    
