@@ -10,9 +10,9 @@ class ram_driver#(parameter DATA_WIDTH=`DATA_WIDTH, parameter ADDR_WIDTH=`ADDR_W
 
     uvm_analysis_port #(ram_item#(DATA_WIDTH, ADDR_WIDTH)) analysis_port;
 
-    bit type_of_previous_item=1; //to avoid one clk delay before first item
+    bit type_of_previous_item; 
     bit type_of_current_item;
-    int had_previous_delay=0;
+    int had_previous_delay=1; //to avoid one clk delay before first item
  
     virtual ram_if#(DATA_WIDTH, ADDR_WIDTH) ram_if_obj;
 
@@ -66,8 +66,10 @@ task ram_driver::run_phase(uvm_phase phase);
                  //if we have two consecutive transactions of the same type without delay, insert one clock between:
                  if(req.transaction_type)  type_of_current_item = 1;
                  else type_of_current_item = 0;
-                 if((type_of_current_item==type_of_previous_item) && !had_previous_delay ) @ ram_if_obj.driver_cb;
-
+                 if((type_of_current_item==type_of_previous_item) && !had_previous_delay ) begin
+                     if(!ram_if_obj.driver_cb.cs) ram_if_obj.driver_cb.data_out<={DATA_WIDTH{1'bz}}; //after fake operation
+                     @ ram_if_obj.driver_cb;
+                 end
                  //drive_something///
                  drive_item();
                  ///////////////////
@@ -149,20 +151,9 @@ endtask
 
 //-------------------------------------------------------------------------------------------------------
 task ram_driver::drive_delay();
-    if(req.transaction_type) begin
-        if(req.delay_between_trans && !req.delay_with_active_cs) begin
-             ram_if_obj.driver_cb.cs<=0;
-             ram_if_obj.driver_cb.data_out<={DATA_WIDTH{1'bz}};
-        end
-        repeat(req.delay_between_trans) @ram_if_obj.driver_cb;
-    end
-    else begin
-        if(req.delay_between_trans) begin
-            if(!req.delay_with_active_cs) ram_if_obj.driver_cb.cs<=0; 
-            ram_if_obj.driver_cb.data_out<={DATA_WIDTH{1'bz}};
-        end
-        repeat(req.delay_between_trans) @ram_if_obj.driver_cb;
-    end
+    if(req.delay_between_trans && !req.delay_with_active_cs) ram_if_obj.driver_cb.cs<=0;
+    if(req.delay_between_trans) ram_if_obj.driver_cb.data_out<={DATA_WIDTH{1'bz}};
+    repeat(req.delay_between_trans) @ram_if_obj.driver_cb;
 endtask
 
 //-------------------------------------------------------------------------------------------------------
